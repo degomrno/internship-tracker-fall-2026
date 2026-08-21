@@ -1,0 +1,650 @@
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #EDEFF2;
+    --card: #FFFFFF;
+    --ink: #14202B;
+    --ink-soft: #5C6B78;
+    --line: #D6DBE1;
+    --cobalt: #2F5FE0;
+    --cobalt-dim: #E3EAFB;
+    --amber: #C97A05;
+    --amber-dim: #FBEDD5;
+    --moss: #2F6B4F;
+    --moss-dim: #DDEBE3;
+    --slate: #7A8794;
+    --slate-dim: #E4E8EC;
+    --display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    --body: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  #app-root {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    min-height: 100vh;
+    padding: 0;
+    display: flex;
+  }
+
+  /* ---- vertical spine ---- */
+  .spine {
+    width: 46px;
+    flex: 0 0 46px;
+    border-right: 1px solid var(--line);
+    background: var(--card);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 28px;
+  }
+  .spine span {
+    writing-mode: vertical-rl;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--slate);
+    white-space: nowrap;
+  }
+
+  .sheet {
+    flex: 1 1 auto;
+    max-width: 980px;
+    padding: 28px 24px 64px;
+    min-width: 0;
+  }
+
+  /* ---- header ---- */
+  header.masthead {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 14px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: -0.02em;
+    margin: 0;
+    line-height: 1;
+  }
+  .tagline {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-top: 7px;
+    letter-spacing: 0.02em;
+  }
+
+  .goal-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .goal-ring { position: relative; width: 54px; height: 54px; flex: 0 0 54px; }
+  .goal-ring svg { transform: rotate(-90deg); }
+  .goal-ring .ring-num {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 13px; font-weight: 600;
+  }
+  .goal-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); line-height: 1.5; }
+  .goal-meta label { display: block; text-transform: uppercase; letter-spacing: 0.14em; font-size: 9.5px; }
+  .goal-meta input {
+    width: 46px; font-family: var(--mono); font-size: 12px;
+    border: 1px solid var(--line); border-radius: 3px; padding: 2px 5px;
+    background: var(--card); color: var(--ink); margin-top: 3px;
+  }
+
+  /* ---- stats ---- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 22px;
+  }
+  .stat { background: var(--card); padding: 14px 14px 12px; }
+  .stat .k {
+    font-family: var(--mono); font-size: 9.5px; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--ink-soft);
+  }
+  .stat .v {
+    font-family: var(--display); font-weight: 700; font-size: 27px;
+    line-height: 1.1; margin-top: 6px; letter-spacing: -0.02em;
+  }
+  .stat .sub { font-family: var(--mono); font-size: 10.5px; color: var(--slate); margin-top: 2px; }
+
+  /* ---- section headings ---- */
+  .sec-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; margin: 30px 0 10px; flex-wrap: wrap;
+  }
+  .sec-head h2 {
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.18em; margin: 0; color: var(--ink);
+  }
+  .sec-head .note { font-family: var(--mono); font-size: 10.5px; color: var(--slate); }
+
+  /* ---- heatmap (signature) ---- */
+  .grid-wrap {
+    background: var(--card); border: 1px solid var(--line);
+    padding: 14px 14px 12px; overflow-x: auto;
+  }
+  .heat { display: flex; gap: 3px; align-items: flex-start; min-width: max-content; }
+  .heat-col { display: flex; flex-direction: column; gap: 3px; }
+  .cell {
+    width: 15px; height: 15px; border-radius: 2px;
+    background: var(--slate-dim); border: 1px solid transparent;
+  }
+  .cell.l1 { background: #C6D5F7; }
+  .cell.l2 { background: #8FAEF0; }
+  .cell.l3 { background: #5583E8; }
+  .cell.l4 { background: var(--cobalt); }
+  .cell.today { border-color: var(--ink); }
+  .cell.future { background: transparent; border: 1px dashed #DDE1E6; }
+  .month-row {
+    display: flex; gap: 3px; margin-bottom: 5px; min-width: max-content;
+    font-family: var(--mono); font-size: 9.5px; color: var(--slate);
+  }
+  .month-row span { width: 15px; text-align: left; white-space: nowrap; overflow: visible; }
+  .legend {
+    display: flex; align-items: center; gap: 6px; margin-top: 10px;
+    font-family: var(--mono); font-size: 10px; color: var(--slate);
+  }
+  .legend .cell { width: 11px; height: 11px; }
+
+  /* ---- pipeline bar ---- */
+  .pipeline { display: flex; height: 30px; border: 1px solid var(--line); overflow: hidden; background: var(--card); }
+  .pipeline div {
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600; color: #fff;
+    min-width: 0; overflow: hidden; white-space: nowrap;
+  }
+  .pipeline .empty {
+    color: var(--slate); background: var(--card); width: 100%;
+    font-weight: 400; justify-content: flex-start; padding-left: 10px;
+  }
+
+  /* ---- form ---- */
+  form.logger {
+    background: var(--card); border: 1px solid var(--line);
+    padding: 14px; display: grid; gap: 10px;
+    grid-template-columns: 1.3fr 1.3fr 0.85fr 0.9fr auto;
+  }
+  form.logger .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  form.logger label {
+    font-family: var(--mono); font-size: 9.5px; text-transform: uppercase;
+    letter-spacing: 0.13em; color: var(--ink-soft);
+  }
+  input[type="text"], input[type="date"], select, textarea {
+    font-family: var(--body); font-size: 13.5px; color: var(--ink);
+    border: 1px solid var(--line); border-radius: 3px; padding: 7px 8px;
+    background: var(--card); width: 100%; min-width: 0;
+  }
+  input:focus-visible, select:focus-visible, button:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--cobalt); outline-offset: 1px;
+  }
+  button.primary {
+    align-self: end; background: var(--ink); color: #fff; border: 0;
+    border-radius: 3px; padding: 9px 16px; cursor: pointer;
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.04em; white-space: nowrap;
+  }
+  button.primary:hover { background: var(--cobalt); }
+
+  /* ---- filters ---- */
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filters button {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink-soft);
+    border-radius: 999px; padding: 4px 11px; cursor: pointer;
+  }
+  .filters button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  /* ---- list ---- */
+  ul.log { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); background: var(--card); }
+  ul.log li {
+    display: grid; grid-template-columns: 1fr auto auto auto;
+    gap: 12px; align-items: center;
+    padding: 11px 13px; border-bottom: 1px solid var(--line);
+  }
+  ul.log li:last-child { border-bottom: 0; }
+  .who { min-width: 0; }
+  .who .co { font-weight: 600; font-size: 14.5px; letter-spacing: -0.01em; }
+  .who .ro { font-size: 12.5px; color: var(--ink-soft); margin-top: 1px; }
+  .when { font-family: var(--mono); font-size: 11px; color: var(--slate); white-space: nowrap; }
+  select.status {
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    border-radius: 999px; padding: 4px 8px; width: auto; cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .st-applied { background: var(--cobalt-dim); color: var(--cobalt); }
+  .st-interviewing { background: var(--amber-dim); color: var(--amber); }
+  .st-offer { background: var(--moss-dim); color: var(--moss); }
+  .st-rejected { background: var(--slate-dim); color: var(--slate); }
+  button.del {
+    background: none; border: 0; color: var(--slate); cursor: pointer;
+    font-size: 17px; line-height: 1; padding: 3px 5px; border-radius: 3px;
+  }
+  button.del:hover { color: #B03030; background: #FBE9E9; }
+
+  .empty-state {
+    padding: 30px 16px; text-align: center; color: var(--ink-soft);
+    font-size: 13.5px; background: var(--card); border: 1px solid var(--line);
+  }
+  .empty-state .big { font-family: var(--display); font-size: 16px; color: var(--ink); margin-bottom: 5px; }
+
+  footer.tools {
+    margin-top: 26px; display: flex; justify-content: space-between;
+    align-items: center; gap: 12px; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 10.5px; color: var(--slate);
+  }
+  footer.tools button {
+    background: none; border: 1px solid var(--line); color: var(--slate);
+    font-family: var(--mono); font-size: 10.5px; padding: 4px 10px;
+    border-radius: 3px; cursor: pointer;
+  }
+  footer.tools button:hover { border-color: #B03030; color: #B03030; }
+
+  .banner {
+    background: #FBEDD5; border: 1px solid #E6C88A; color: #7A5405;
+    font-family: var(--mono); font-size: 11px; padding: 8px 11px; margin-bottom: 14px;
+  }
+
+  @media (max-width: 720px) {
+    .spine { display: none; }
+    .sheet { padding: 20px 14px 50px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    form.logger { grid-template-columns: 1fr 1fr; }
+    form.logger .field.wide { grid-column: 1 / -1; }
+    button.primary { grid-column: 1 / -1; }
+    ul.log li { grid-template-columns: 1fr auto; row-gap: 8px; }
+    ul.log li .when { grid-column: 1; }
+    h1 { font-size: 24px; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cell, button.primary, .filters button { transition: background-color 120ms ease, color 120ms ease; }
+  }
+</style>
+
+<div id="app-root">
+  <div class="spine"><span>Application Log</span></div>
+  <div class="sheet">
+    <div id="banner-slot"></div>
+
+    <header class="masthead">
+      <div>
+        <h1>Internship Log</h1>
+        <div class="tagline">One row per application. Keep the grid filling in.</div>
+      </div>
+      <div class="goal-box">
+        <div class="goal-ring">
+          <svg width="54" height="54" viewBox="0 0 54 54">
+            <circle cx="27" cy="27" r="22" fill="none" stroke="#E4E8EC" stroke-width="6"></circle>
+            <circle id="ring-arc" cx="27" cy="27" r="22" fill="none" stroke="#2F5FE0"
+                    stroke-width="6" stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="138.2"></circle>
+          </svg>
+          <div class="ring-num" id="ring-num">0/3</div>
+        </div>
+        <div class="goal-meta">
+          <label for="goal-input">Weekly goal</label>
+          <input id="goal-input" type="number" min="1" max="50" value="3">
+        </div>
+      </div>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><div class="k">Total sent</div><div class="v" id="s-total">0</div><div class="sub" id="s-total-sub">all time</div></div>
+      <div class="stat"><div class="k">This week</div><div class="v" id="s-week">0</div><div class="sub" id="s-week-sub">since Sunday</div></div>
+      <div class="stat"><div class="k">Week streak</div><div class="v" id="s-streak">0</div><div class="sub" id="s-streak-sub">weeks in a row</div></div>
+      <div class="stat"><div class="k">Heard back</div><div class="v" id="s-resp">0%</div><div class="sub" id="s-resp-sub">of applications</div></div>
+    </div>
+
+    <div class="sec-head">
+      <h2>Activity</h2>
+      <span class="note" id="grid-note">Last 18 weeks</span>
+    </div>
+    <div class="grid-wrap">
+      <div class="month-row" id="month-row"></div>
+      <div class="heat" id="heat"></div>
+      <div class="legend">
+        <span>none</span>
+        <span class="cell"></span><span class="cell l1"></span><span class="cell l2"></span>
+        <span class="cell l3"></span><span class="cell l4"></span>
+        <span>4+ a day</span>
+      </div>
+    </div>
+
+    <div class="sec-head"><h2>Pipeline</h2><span class="note" id="pipe-note"></span></div>
+    <div class="pipeline" id="pipeline"></div>
+
+    <div class="sec-head"><h2>Log an application</h2></div>
+    <form class="logger" id="logger">
+      <div class="field wide">
+        <label for="f-company">Company</label>
+        <input id="f-company" type="text" placeholder="e.g. Dell Medical School" required>
+      </div>
+      <div class="field wide">
+        <label for="f-role">Role</label>
+        <input id="f-role" type="text" placeholder="e.g. Data Science Intern">
+      </div>
+      <div class="field">
+        <label for="f-date">Date applied</label>
+        <input id="f-date" type="date" required>
+      </div>
+      <div class="field">
+        <label for="f-status">Status</label>
+        <select id="f-status">
+          <option value="applied">Applied</option>
+          <option value="interviewing">Interviewing</option>
+          <option value="offer">Offer</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+      <button class="primary" type="submit">Add to log</button>
+    </form>
+
+    <div class="sec-head">
+      <h2>All applications</h2>
+      <div class="filters" id="filters">
+        <button data-f="all" aria-pressed="true">All</button>
+        <button data-f="applied" aria-pressed="false">Applied</button>
+        <button data-f="interviewing" aria-pressed="false">Interviewing</button>
+        <button data-f="offer" aria-pressed="false">Offer</button>
+        <button data-f="rejected" aria-pressed="false">Rejected</button>
+      </div>
+    </div>
+    <div id="list-slot"></div>
+
+    <footer class="tools">
+      <span id="save-state">Saved</span>
+      <button id="reset">Clear all data</button>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  var KEY = 'internship-log:v1';
+  var state = { apps: [], goal: 3 };
+  var filter = 'all';
+  var STATUSES = ['applied', 'interviewing', 'offer', 'rejected'];
+  var LABEL = { applied: 'Applied', interviewing: 'Interviewing', offer: 'Offer', rejected: 'Rejected' };
+  var FILL = { applied: '#2F5FE0', interviewing: '#C97A05', offer: '#2F6B4F', rejected: '#7A8794' };
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function banner(msg) {
+    $('banner-slot').innerHTML = msg ? '<div class="banner">' + msg + '</div>' : '';
+  }
+  function saveState(txt) { $('save-state').textContent = txt; }
+
+  /* ---------- dates ---------- */
+  function today() { var d = new Date(); d.setHours(0, 0, 0, 0); return d; }
+  function iso(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function fromISO(s) {
+    var p = String(s).split('-');
+    return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+  }
+  function weekStart(d) { var x = new Date(d); x.setDate(x.getDate() - x.getDay()); x.setHours(0, 0, 0, 0); return x; }
+  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function pretty(s) {
+    var d = fromISO(s);
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  /* ---------- storage ---------- */
+  async function load() {
+    try {
+      var r = await window.storage.get(KEY);
+      if (r && r.value) {
+        var parsed = JSON.parse(r.value);
+        if (parsed && Array.isArray(parsed.apps)) state = parsed;
+        if (!state.goal) state.goal = 3;
+      }
+    } catch (e) {
+      // No saved data yet, or storage unavailable — start fresh.
+    }
+  }
+  async function persist() {
+    saveState('Saving…');
+    try {
+      await window.storage.set(KEY, JSON.stringify(state));
+      saveState('Saved');
+      banner('');
+    } catch (e) {
+      saveState('Not saved');
+      banner('That change did not save. Your log is still on screen — try again in a moment.');
+    }
+  }
+
+  /* ---------- derived ---------- */
+  function countsByDate() {
+    var m = {};
+    state.apps.forEach(function (a) { m[a.date] = (m[a.date] || 0) + 1; });
+    return m;
+  }
+  function streakWeeks() {
+    if (!state.apps.length) return 0;
+    var weeks = {};
+    state.apps.forEach(function (a) { weeks[iso(weekStart(fromISO(a.date)))] = true; });
+    var cur = weekStart(today());
+    var n = 0;
+    if (!weeks[iso(cur)]) cur = addDays(cur, -7); // current week still has time left
+    while (weeks[iso(cur)]) { n++; cur = addDays(cur, -7); }
+    return n;
+  }
+
+  /* ---------- render ---------- */
+  function renderStats() {
+    var total = state.apps.length;
+    var wk = iso(weekStart(today()));
+    var thisWeek = state.apps.filter(function (a) { return iso(weekStart(fromISO(a.date))) === wk; }).length;
+    var heard = state.apps.filter(function (a) { return a.status !== 'applied'; }).length;
+
+    $('s-total').textContent = total;
+    $('s-week').textContent = thisWeek;
+    $('s-streak').textContent = streakWeeks();
+    $('s-resp').textContent = total ? Math.round((heard / total) * 100) + '%' : '—';
+    $('s-resp-sub').textContent = total ? heard + ' of ' + total + ' moved on' : 'nothing logged yet';
+
+    var goal = state.goal || 3;
+    var pct = Math.min(thisWeek / goal, 1);
+    var C = 2 * Math.PI * 22;
+    $('ring-arc').setAttribute('stroke-dashoffset', String(C - pct * C));
+    $('ring-arc').setAttribute('stroke', pct >= 1 ? '#2F6B4F' : '#2F5FE0');
+    $('ring-num').textContent = thisWeek + '/' + goal;
+  }
+
+  function renderHeat() {
+    var counts = countsByDate();
+    var WEEKS = 18;
+    var start = addDays(weekStart(today()), -7 * (WEEKS - 1));
+    var heat = $('heat');
+    var months = $('month-row');
+    heat.innerHTML = '';
+    months.innerHTML = '';
+    var t = iso(today());
+    var lastMonth = -1;
+
+    for (var w = 0; w < WEEKS; w++) {
+      var col = document.createElement('div');
+      col.className = 'heat-col';
+      var colStart = addDays(start, w * 7);
+      var lbl = document.createElement('span');
+      lbl.textContent = colStart.getMonth() !== lastMonth ? colStart.toLocaleDateString(undefined, { month: 'short' }) : '';
+      if (colStart.getMonth() !== lastMonth) lastMonth = colStart.getMonth();
+      months.appendChild(lbl);
+
+      for (var d = 0; d < 7; d++) {
+        var day = addDays(colStart, d);
+        var key = iso(day);
+        var n = counts[key] || 0;
+        var cell = document.createElement('div');
+        var lvl = n === 0 ? '' : n === 1 ? ' l1' : n === 2 ? ' l2' : n === 3 ? ' l3' : ' l4';
+        cell.className = 'cell' + lvl + (key === t ? ' today' : '') + (day > today() ? ' future' : '');
+        cell.title = n + (n === 1 ? ' application' : ' applications') + ' on ' +
+          day.toLocaleDateString(undefined, { month: 'long', day: 'numeric' });
+        col.appendChild(cell);
+      }
+      heat.appendChild(col);
+    }
+  }
+
+  function renderPipeline() {
+    var el = $('pipeline');
+    var total = state.apps.length;
+    if (!total) {
+      el.innerHTML = '<div class="empty">Your pipeline shows up here once you log something.</div>';
+      $('pipe-note').textContent = '';
+      return;
+    }
+    var html = '';
+    STATUSES.forEach(function (s) {
+      var n = state.apps.filter(function (a) { return a.status === s; }).length;
+      if (!n) return;
+      var pct = (n / total) * 100;
+      html += '<div style="flex:' + n + ';background:' + FILL[s] + '" title="' + LABEL[s] + ': ' + n + '">' +
+        (pct > 11 ? LABEL[s] + ' ' + n : n) + '</div>';
+    });
+    el.innerHTML = html;
+    var offers = state.apps.filter(function (a) { return a.status === 'offer'; }).length;
+    $('pipe-note').textContent = offers ? offers + (offers === 1 ? ' offer' : ' offers') + ' so far' : '';
+  }
+
+  function renderList() {
+    var slot = $('list-slot');
+    var rows = state.apps.slice().sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
+    if (filter !== 'all') rows = rows.filter(function (a) { return a.status === filter; });
+
+    if (!rows.length) {
+      slot.innerHTML = '<div class="empty-state"><div class="big">' +
+        (state.apps.length ? 'Nothing in this stage yet.' : 'No applications logged.') + '</div>' +
+        (state.apps.length ? 'Pick another filter to see the rest.' : 'Add your first one above — the grid starts filling in today.') +
+        '</div>';
+      return;
+    }
+
+    var ul = document.createElement('ul');
+    ul.className = 'log';
+    rows.forEach(function (a) {
+      var li = document.createElement('li');
+
+      var who = document.createElement('div');
+      who.className = 'who';
+      var co = document.createElement('div'); co.className = 'co'; co.textContent = a.company;
+      var ro = document.createElement('div'); ro.className = 'ro'; ro.textContent = a.role || '—';
+      who.appendChild(co); who.appendChild(ro);
+
+      var when = document.createElement('div');
+      when.className = 'when';
+      when.textContent = pretty(a.date);
+
+      var sel = document.createElement('select');
+      sel.className = 'status st-' + a.status;
+      sel.setAttribute('aria-label', 'Status for ' + a.company);
+      STATUSES.forEach(function (s) {
+        var o = document.createElement('option');
+        o.value = s; o.textContent = LABEL[s];
+        if (s === a.status) o.selected = true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener('change', function () {
+        a.status = sel.value;
+        persist(); render();
+      });
+
+      var del = document.createElement('button');
+      del.className = 'del';
+      del.type = 'button';
+      del.innerHTML = '&times;';
+      del.setAttribute('aria-label', 'Remove ' + a.company);
+      del.addEventListener('click', function () {
+        state.apps = state.apps.filter(function (x) { return x.id !== a.id; });
+        persist(); render();
+      });
+
+      li.appendChild(who); li.appendChild(when); li.appendChild(sel); li.appendChild(del);
+      ul.appendChild(li);
+    });
+    slot.innerHTML = '';
+    slot.appendChild(ul);
+  }
+
+  function render() { renderStats(); renderHeat(); renderPipeline(); renderList(); }
+
+  /* ---------- events ---------- */
+  $('logger').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var company = $('f-company').value.trim();
+    if (!company) return;
+    state.apps.push({
+      id: 'a' + Date.now() + Math.random().toString(36).slice(2, 6),
+      company: company,
+      role: $('f-role').value.trim(),
+      date: $('f-date').value || iso(today()),
+      status: $('f-status').value
+    });
+    $('f-company').value = '';
+    $('f-role').value = '';
+    $('f-date').value = iso(today());
+    $('f-status').value = 'applied';
+    $('f-company').focus();
+    persist(); render();
+  });
+
+  $('goal-input').addEventListener('change', function () {
+    var v = parseInt($('goal-input').value, 10);
+    state.goal = (isNaN(v) || v < 1) ? 1 : Math.min(v, 50);
+    $('goal-input').value = state.goal;
+    persist(); renderStats();
+  });
+
+  $('filters').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    filter = b.dataset.f;
+    Array.prototype.forEach.call($('filters').children, function (c) {
+      c.setAttribute('aria-pressed', String(c === b));
+    });
+    renderList();
+  });
+
+  var resetArmed = false;
+  $('reset').addEventListener('click', async function () {
+    if (!resetArmed) {
+      resetArmed = true;
+      $('reset').textContent = 'Click again to erase everything';
+      setTimeout(function () { resetArmed = false; $('reset').textContent = 'Clear all data'; }, 4000);
+      return;
+    }
+    state = { apps: [], goal: state.goal };
+    resetArmed = false;
+    $('reset').textContent = 'Clear all data';
+    try { await window.storage.delete(KEY); } catch (err) { /* nothing stored */ }
+    render();
+  });
+
+  /* ---------- boot ---------- */
+  (async function () {
+    $('f-date').value = iso(today());
+    await load();
+    $('goal-input').value = state.goal;
+    render();
+  })();
+})();
+</script>
