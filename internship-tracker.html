@@ -408,27 +408,26 @@
   }
 
   /* ---------- storage ---------- */
-  async function load() {
+ function load() {
     try {
-      var r = await window.storage.get(KEY);
-      if (r && r.value) {
-        var parsed = JSON.parse(r.value);
-        if (parsed && Array.isArray(parsed.apps)) state = parsed;
-        if (!state.goal) state.goal = 3;
-      }
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.apps)) state = parsed;
+      if (!state.goal) state.goal = 3;
     } catch (e) {
-      // No saved data yet, or storage unavailable — start fresh.
+      // Nothing saved yet, or storage is blocked — start fresh.
     }
   }
-  async function persist() {
-    saveState('Saving…');
+
+  function persist() {
     try {
-      await window.storage.set(KEY, JSON.stringify(state));
+      localStorage.setItem(KEY, JSON.stringify(state));
       saveState('Saved');
       banner('');
     } catch (e) {
       saveState('Not saved');
-      banner('That change did not save. Your log is still on screen — try again in a moment.');
+      banner('This browser is blocking storage, so changes will not survive a refresh. Private browsing is the usual cause.');
     }
   }
 
@@ -625,7 +624,7 @@
   });
 
   var resetArmed = false;
-  $('reset').addEventListener('click', async function () {
+  $('reset').addEventListener('click', function () {
     if (!resetArmed) {
       resetArmed = true;
       $('reset').textContent = 'Click again to erase everything';
@@ -635,14 +634,14 @@
     state = { apps: [], goal: state.goal };
     resetArmed = false;
     $('reset').textContent = 'Clear all data';
-    try { await window.storage.delete(KEY); } catch (err) { /* nothing stored */ }
+    try { localStorage.removeItem(KEY); } catch (err) {}
     render();
   });
 
   /* ---------- boot ---------- */
-  (async function () {
+  (function () {
     $('f-date').value = iso(today());
-    await load();
+    load();
     $('goal-input').value = state.goal;
     render();
   })();
